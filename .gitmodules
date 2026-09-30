@@ -1,18 +1,18 @@
 [submodule "wp_alerts"]
 	path = wp_alerts
-	url = github.com:TheTourist1502/wp-alerts.git
+	url = https://github.com/TheTourist1502/wp-alerts.git
 [submodule "wp_layout"]
 	path = wp_layout
-	url = github.com:TheTourist1502/wp-layout.git
+	url = https://github.com/TheTourist1502/wp-layout.git
 [submodule "wp_shared"]
 	path = wp_shared
-	url = github.com:TheTourist1502/wp-shared.git
+	url = https://github.com/TheTourist1502/wp-shared.git
 [submodule "wp_watchlist"]
 	path = wp_watchlist
-	url = github.com:TheTourist1502/wp-watchlist.git
+	url = https://github.com/TheTourist1502/wp-watchlist.git
 [submodule "wp_portfolio"]
 	path = wp_portfolio
-	url = github.com:TheTourist1502/wp-portfolio.git
+	url = https://github.com/TheTourist1502/wp-portfolio.git
 [submodule "wp_dashboard"]
 	path = wp_dashboard
-	url = github.com:TheTourist1502/wp-dashboard.git
+	url = https://github.com/TheTourist1502/wp-dashboard.git

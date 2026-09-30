@@ -43,7 +43,8 @@
       "Bash(timeout 30 google-chrome --headless=new --disable-gpu --enable-logging=stderr --v=0 --virtual-time-budget=8000 --dump-dom \"http://localhost:3000/watchlist/AAPL\")",
       "Bash(cd ~/work/mf_xumane/mf_layout && grep -n \"types\\\\|GENERATE\" package.json; cat scripts/generate-remote-types.js | head -80; grep -n \"dts\\\\|GENERATE_TYPES\\\\|mf-types\" rspack.config.js tsconfig.json; ls @mf-types @mf-types/* | head -30; cd ../mf_equity && grep -n \"dts\\\\|GENERATE_TYPES\" -A8 rspack.config.js module-federation.config.js | head -30; ls @mf-types | head; cd ~/Projects/wealth-pulse && ls -d wp_*/@mf-types wp_*/.__mf__temp 2>/dev/null; ls wp_portfolio/dist 2>/dev/null | head)",
       "Read(//home/afriduzzaman/Projects/**)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3003/@mf-types.zip)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3003/@mf-types.zip)",
+      "Bash(ssh -T git@github.com)"
     ],
     "additionalDirectories": [
       "/home/afriduzzaman/.claude/plans"
