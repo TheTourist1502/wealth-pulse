@@ -10,6 +10,7 @@ This repository is the **workspace**. It holds no app code. It holds:
   agents and skills used by Claude Code
 - `setup.sh`: clones (and updates) every app repo into this folder
 - `dev.sh`: runs every app's dev server from here with a single command
+- `types.sh`: generates every app's Module Federation types without a server
 
 ## Apps
 
@@ -50,6 +51,7 @@ wealth-pulse/
 ├── .claude/
 ├── setup.sh
 ├── dev.sh
+├── types.sh
 ├── wp_layout/      ← each wp_* is its own Git repo
 ├── wp_shared/
 ├── wp_dashboard/
@@ -107,6 +109,7 @@ The first run installs dependencies (`pnpm install`) in any app that has no
 | Stop everything | `Ctrl+C` in the `dev.sh` terminal |
 | Get the latest code for every app | `./setup.sh pull` |
 | Clone an app that was added later | `./setup.sh` |
+| Regenerate federated types (no server) | `./types.sh` or `./types.sh wp_shared` |
 
 `dev.sh` prefixes each line of output with the app's name (`[wp_portfolio] …`),
 so you can tell the logs apart.
@@ -166,7 +169,7 @@ missing. Run `./setup.sh` to create it from `.env.example`.
 local commits that differ from its remote. `cd` into the app and resolve it
 with `git pull --rebase` or a merge. The script never merges for you.
 
-**`permission denied: ./setup.sh`**: run `chmod +x setup.sh dev.sh`.
+**`permission denied: ./setup.sh`**: run `chmod +x setup.sh dev.sh types.sh`.
 
 ## Project rules
 
