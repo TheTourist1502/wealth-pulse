@@ -1,0 +1,18 @@
+[submodule "wp_alerts"]
+	path = wp_alerts
+	url = git@github.com:company/wp-alerts.git
+[submodule "wp_layout"]
+	path = wp_layout
+	url = git@github.com:company/wp-layout.git
+[submodule "wp_shared"]
+	path = wp_shared
+	url = git@github.com:company/wp-shared.git
+[submodule "wp_watchlist"]
+	path = wp_watchlist
+	url = git@github.com:company/wp-watchlist.git
+[submodule "wp_portfolio"]
+	path = wp_portfolio
+	url = git@github.com:company/wp-portfolio.git
+[submodule "wp_dashboard"]
+	path = wp_dashboard
+	url = git@github.com:company/wp-dashboard.git

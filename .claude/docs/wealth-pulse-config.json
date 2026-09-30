@@ -1,0 +1,1070 @@
+{
+  "app": {
+    "name": "WealthPulse",
+    "version": "1.0.0",
+    "description": "Real-time Financial Dashboard with Micro Frontend Architecture",
+    "environment": "development",
+    "baseUrl": "http://localhost:3000"
+  },
+
+  "architecture": {
+    "pattern": "Micro Frontend (MFE) with Module Federation",
+    "framework": {
+      "react": "18.3.1",
+      "typescript": "5.3.3",
+      "router": "@tanstack/react-router@1.16.0",
+      "stateManagement": "zustand@4.4.7",
+      "dataFetching": "@tanstack/react-query@5.28.0",
+      "tableManagement": "@tanstack/react-table@8.11.0"
+    },
+    "buildTool": "webpack@5.89.0",
+    "moduleLoader": "@module-federation/enhanced@0.0.10",
+    "packageManager": "pnpm@9.0.0",
+    "workspaceType": "monorepo",
+    "apps": {
+      "shell": {
+        "port": 3000,
+        "type": "container",
+        "description": "Main application shell and orchestrator",
+        "remotes": {
+          "dashboard": "http://localhost:3001/remoteEntry.js",
+          "portfolio": "http://localhost:3002/remoteEntry.js",
+          "watchlist": "http://localhost:3003/remoteEntry.js",
+          "alerts": "http://localhost:3004/remoteEntry.js",
+          "shared": "http://localhost:3008/remoteEntry.js"
+        },
+        "shared": {
+          "react": { "singleton": true, "eager": true, "requiredVersion": "^18.0.0" },
+          "react-dom": { "singleton": true, "eager": true, "requiredVersion": "^18.0.0" },
+          "@tanstack/react-query": { "singleton": true, "requiredVersion": "^5.0.0" },
+          "@tanstack/react-router": { "singleton": true, "requiredVersion": "^1.0.0" },
+          "@tanstack/react-table": { "singleton": true, "requiredVersion": "^8.0.0" },
+          "zustand": { "singleton": true, "requiredVersion": "^4.0.0" }
+        }
+      },
+      "dashboard": {
+        "port": 3001,
+        "type": "feature-module",
+        "description": "Dashboard and portfolio overview module",
+        "exposes": {
+          "./Dashboard": "./src/Dashboard.tsx",
+          "./routes": "./src/routes.ts"
+        }
+      },
+      "portfolio": {
+        "port": 3002,
+        "type": "feature-module",
+        "description": "Portfolio management and analytics module",
+        "exposes": {
+          "./Portfolio": "./src/Portfolio.tsx",
+          "./routes": "./src/routes.ts"
+        }
+      },
+      "watchlist": {
+        "port": 3003,
+        "type": "feature-module",
+        "description": "Stock watchlist and monitoring module",
+        "exposes": {
+          "./Watchlist": "./src/Watchlist.tsx",
+          "./routes": "./src/routes.ts"
+        }
+      },
+      "alerts": {
+        "port": 3004,
+        "type": "feature-module",
+        "description": "Alerts and notifications module",
+        "exposes": {
+          "./Alerts": "./src/Alerts.tsx",
+          "./routes": "./src/routes.ts"
+        }
+      },
+      "shared": {
+        "port": 3008,
+        "type": "shared-library",
+        "description": "Shared utilities, types, hooks, and components",
+        "exposes": {
+          "./types": "./src/types/index.ts",
+          "./api": "./src/api/index.ts",
+          "./hooks": "./src/hooks/index.ts",
+          "./components": "./src/components/index.ts",
+          "./utils": "./src/utils/index.ts",
+          "./stores": "./src/stores/index.ts",
+          "./eventBus": "./src/eventBus.ts"
+        }
+      }
+    }
+  },
+
+  "rules": {
+    "architecture": {
+      "moduleFederation": {
+        "rule_001": "Each feature module must expose components via Module Federation",
+        "rule_002": "Shared module is singleton - loaded once and shared across all modules",
+        "rule_003": "No direct imports between feature modules - use EventBus for communication",
+        "rule_004": "All API calls must go through shared/api hooks",
+        "rule_005": "Feature modules can only be lazy-loaded via React.lazy() + Suspense",
+        "rule_006": "Cross-module state syncing via Zustand + EventBus only",
+        "rule_007": "Each module must have its own TypeScript config with shared base",
+        "rule_008": "Module entry points must export default component and routes"
+      },
+      "naming": {
+        "rule_101": "Apps in apps/ folder (shell, dashboard, portfolio, watchlist, alerts)",
+        "rule_102": "Shared code in packages/shared",
+        "rule_103": "Each module: src/[components|hooks|pages|types|utils]",
+        "rule_104": "Component names: PascalCase (e.g., PortfolioSummary.tsx)",
+        "rule_105": "Hook names: camelCase with 'use' prefix (e.g., usePortfolioData.ts)",
+        "rule_106": "Type files: index.ts as barrel exports",
+        "rule_107": "API files: queries.ts for read ops, mutations.ts for write ops",
+        "rule_108": "Store files: [featureName]Store.ts (e.g., authStore.ts)"
+      },
+      "dependencies": {
+        "rule_201": "React and peer dependencies must be peerDependencies in feature modules",
+        "rule_202": "DevDependencies only for build tools (webpack, typescript, etc.)",
+        "rule_203": "No circular dependencies allowed (ESLint rule enforced)",
+        "rule_204": "External libraries: only approved list (recharts, axios, clsx, etc.)",
+        "rule_205": "Monorepo packages referenced as @wealth-pulse/[package-name]",
+        "rule_206": "Version mismatch tolerance: minor versions only (^X.Y.Z)",
+        "rule_207": "Security updates applied within 48 hours of release"
+      }
+    },
+    "codeQuality": {
+      "typescript": {
+        "rule_301": "Strict mode enabled globally - strictNullChecks: true",
+        "rule_302": "noImplicitAny: true - all types must be explicit",
+        "rule_303": "noUnusedLocals: true - no dead code",
+        "rule_304": "noUnusedParameters: true - all params must be used",
+        "rule_305": "esModuleInterop: true for CommonJS compatibility",
+        "rule_306": "resolveJsonModule: true for JSON imports",
+        "rule_307": "skipLibCheck: true - faster builds",
+        "rule_308": "Target: ES2020 minimum"
+      },
+      "linting": {
+        "rule_401": "ESLint enforced on all TypeScript files",
+        "rule_402": "Prettier formatting on save (2 space indent)",
+        "rule_403": "No console logs in production builds (eslint-plugin-no-console)",
+        "rule_404": "React best practices enforced (eslint-plugin-react-hooks)",
+        "rule_405": "Imports must be sorted and organized",
+        "rule_406": "Max line length: 100 characters",
+        "rule_407": "No unused imports allowed",
+        "rule_408": "A11y rules enforced (eslint-plugin-jsx-a11y)"
+      },
+      "testing": {
+        "rule_501": "Minimum 80% code coverage required",
+        "rule_502": "All utils functions must have unit tests",
+        "rule_503": "All custom hooks must have hook tests",
+        "rule_504": "All components must have integration tests",
+        "rule_505": "E2E tests for critical user flows",
+        "rule_506": "Tests run on every commit (pre-commit hook)",
+        "rule_507": "Coverage reports generated on each build",
+        "rule_508": "Snapshot tests for visual regression detection"
+      }
+    },
+    "performance": {
+      "bundling": {
+        "rule_601": "Code splitting by route (automatic with TanStack Router)",
+        "rule_602": "Lazy load feature modules (async import via Module Federation)",
+        "rule_603": "Tree-shake unused code in production",
+        "rule_604": "Minify and compress all assets",
+        "rule_605": "Bundle size monitoring: alert if > 500KB (gzipped)",
+        "rule_606": "Chunk size limits: entry 200KB, async 150KB (gzipped)",
+        "rule_607": "Source maps only in development"
+      },
+      "runtime": {
+        "rule_701": "React Query stale times: 5 min (portfolio), 1 min (prices)",
+        "rule_702": "Cache invalidation on mutation",
+        "rule_703": "Optimize re-renders with useMemo/useCallback",
+        "rule_704": "Virtual scrolling for large lists (100+ items)",
+        "rule_705": "Pagination default: 20 items per page",
+        "rule_706": "Debounce search inputs (300ms)",
+        "rule_707": "Throttle window resize listeners (200ms)"
+      },
+      "network": {
+        "rule_801": "API request timeout: 30 seconds",
+        "rule_802": "Retry logic: 3 attempts with exponential backoff",
+        "rule_803": "Request batching for multiple API calls",
+        "rule_804": "Gzip compression on all responses",
+        "rule_805": "CORS enabled for localhost development",
+        "rule_806": "Rate limiting: 60 requests/minute per endpoint",
+        "rule_807": "WebSocket reconnection attempts: 5 with backoff"
+      }
+    },
+    "security": {
+      "authentication": {
+        "rule_901": "JWT tokens stored in httpOnly cookies only",
+        "rule_902": "Token refresh before expiry (5 min buffer)",
+        "rule_903": "Logout clears all stored tokens and state",
+        "rule_904": "CSRF protection: x-csrf-token header on mutations",
+        "rule_905": "Credentials sent in all cross-origin requests"
+      },
+      "sanitization": {
+        "rule_1001": "All user input sanitized before display",
+        "rule_1002": "No dangerouslySetInnerHTML without review",
+        "rule_1003": "XSS protection via Content Security Policy",
+        "rule_1004": "SQL injection prevention via parameterized queries (backend)",
+        "rule_1005": "DOMPurify used for HTML sanitization"
+      },
+      "dataProtection": {
+        "rule_1101": "Sensitive data (passwords) never logged",
+        "rule_1102": "API keys stored in environment variables only",
+        "rule_1103": "HTTPS/TLS for all communications",
+        "rule_1104": "Data encryption at rest (backend responsibility)",
+        "rule_1105": "PII masked in logs (emails, phone numbers)"
+      }
+    }
+  },
+
+  "styling": {
+    "system": "Tailwind CSS",
+    "version": "3.4.1",
+    "configuration": {
+      "spacing": "4px base unit",
+      "breakpoints": {
+        "xs": "320px",
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px",
+        "2xl": "1536px"
+      },
+      "colors": {
+        "primary": "hsl(var(--color-primary) / <alpha-value>)",
+        "secondary": "hsl(var(--color-secondary) / <alpha-value>)",
+        "accent": "hsl(var(--color-accent) / <alpha-value>)",
+        "success": "hsl(var(--color-success) / <alpha-value>)",
+        "warning": "hsl(var(--color-warning) / <alpha-value>)",
+        "error": "hsl(var(--color-error) / <alpha-value>)",
+        "neutral": "hsl(var(--color-neutral) / <alpha-value>)"
+      },
+      "typography": {
+        "fontFamily": {
+          "sans": "Inter, system-ui, sans-serif",
+          "mono": "Fira Code, monospace"
+        },
+        "fontSize": {
+          "xs": "0.75rem",
+          "sm": "0.875rem",
+          "base": "1rem",
+          "lg": "1.125rem",
+          "xl": "1.25rem",
+          "2xl": "1.5rem",
+          "3xl": "1.875rem",
+          "4xl": "2.25rem"
+        },
+        "fontWeight": {
+          "light": 300,
+          "normal": 400,
+          "medium": 500,
+          "semibold": 600,
+          "bold": 700
+        }
+      },
+      "shadows": {
+        "xs": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+        "sm": "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
+        "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+        "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+        "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
+      },
+      "borderRadius": {
+        "none": "0",
+        "sm": "0.125rem",
+        "md": "0.375rem",
+        "lg": "0.5rem",
+        "xl": "0.75rem",
+        "2xl": "1rem"
+      }
+    },
+    "rules": {
+      "styling_001": "Use Tailwind classes only - no inline CSS",
+      "styling_002": "Custom CSS in CSS modules only (rarely needed)",
+      "styling_003": "Use CSS variables for theme colors: var(--color-primary)",
+      "styling_004": "Component classes: use clsx for conditional styling",
+      "styling_005": "No hardcoded colors - use theme tokens",
+      "styling_006": "Responsive design mobile-first (sm: before lg:)",
+      "styling_007": "All interactive elements: hover/focus states",
+      "styling_008": "Spacing: use Tailwind units (p-4, m-2, gap-3, etc.)",
+      "styling_009": "Animations: use Tailwind @apply or CSS modules",
+      "styling_010": "Dark mode support via dark: prefix everywhere"
+    },
+    "components": {
+      "button": {
+        "variants": ["primary", "secondary", "danger", "ghost"],
+        "sizes": ["xs", "sm", "md", "lg", "xl"],
+        "states": ["default", "hover", "active", "disabled", "loading"],
+        "example": "bg-primary hover:bg-primary-600 disabled:opacity-50"
+      },
+      "input": {
+        "variants": ["text", "email", "password", "number", "search"],
+        "sizes": ["sm", "md", "lg"],
+        "states": ["default", "focus", "error", "disabled"],
+        "example": "border border-neutral-300 focus:ring-2 focus:ring-primary"
+      },
+      "card": {
+        "variants": ["default", "elevated", "outlined"],
+        "example": "rounded-lg border border-neutral-200 bg-white p-4 shadow-md"
+      },
+      "badge": {
+        "variants": ["success", "warning", "error", "info"],
+        "sizes": ["sm", "md"],
+        "example": "inline-flex items-center rounded-full bg-success-100 px-3 py-1 text-sm text-success-700"
+      },
+      "alert": {
+        "variants": ["success", "warning", "error", "info"],
+        "example": "rounded-lg bg-error-50 border border-error-300 p-4 text-error-700"
+      }
+    }
+  },
+
+  "theming": {
+    "system": "CSS Variables + Tailwind",
+    "mode": "light",
+    "modes": ["light", "dark", "system"],
+    "implementation": {
+      "lightTheme": {
+        "colorPrimary": "210 100% 50%",
+        "colorSecondary": "280 85% 55%",
+        "colorAccent": "35 100% 50%",
+        "colorSuccess": "142 71% 45%",
+        "colorWarning": "38 92% 50%",
+        "colorError": "0 84% 60%",
+        "colorNeutral": "0 0% 50%",
+        "bgPrimary": "0 0% 100%",
+        "bgSecondary": "0 0% 97%",
+        "bgTertiary": "0 0% 94%",
+        "textPrimary": "0 0% 8%",
+        "textSecondary": "0 0% 35%",
+        "textTertiary": "0 0% 55%",
+        "borderPrimary": "0 0% 90%",
+        "borderSecondary": "0 0% 85%"
+      },
+      "darkTheme": {
+        "colorPrimary": "210 100% 60%",
+        "colorSecondary": "280 85% 65%",
+        "colorAccent": "35 100% 60%",
+        "colorSuccess": "142 71% 55%",
+        "colorWarning": "38 92% 60%",
+        "colorError": "0 84% 70%",
+        "colorNeutral": "0 0% 50%",
+        "bgPrimary": "0 0% 12%",
+        "bgSecondary": "0 0% 18%",
+        "bgTertiary": "0 0% 24%",
+        "textPrimary": "0 0% 98%",
+        "textSecondary": "0 0% 80%",
+        "textTertiary": "0 0% 60%",
+        "borderPrimary": "0 0% 30%",
+        "borderSecondary": "0 0% 25%"
+      }
+    },
+    "cssVariables": {
+      "location": "packages/shared/src/styles/variables.css",
+      "format": ":root { --color-primary: 210 100% 50%; }",
+      "priority": "High - loaded first in HTML head"
+    },
+    "rules": {
+      "theming_001": "Theme colors via CSS variables only",
+      "theming_002": "Dark mode toggle persisted in localStorage",
+      "theming_003": "System preference detection on first load",
+      "theming_004": "Smooth transition between themes (0.3s)",
+      "theming_005": "All components support both light and dark modes",
+      "theming_006": "High contrast mode for accessibility (WCAG AA)",
+      "theming_007": "Brand colors updated in shared package only",
+      "theming_008": "Color tokens documented in design system"
+    }
+  },
+
+  "routing": {
+    "system": "@tanstack/react-router",
+    "version": "1.16.0",
+    "structure": "File-based with TanStack Router",
+    "rootLayout": "apps/shell/src/layouts/RootLayout.tsx",
+    "routes": {
+      "public": {
+        "/": {
+          "name": "home",
+          "component": "Dashboard (lazy from dashboard module)",
+          "path": "apps/dashboard/src/Dashboard.tsx",
+          "layout": "RootLayout",
+          "permissions": "none",
+          "meta": {
+            "title": "Dashboard",
+            "description": "Financial dashboard overview"
+          }
+        },
+        "/auth/login": {
+          "name": "login",
+          "component": "LoginPage",
+          "path": "apps/shell/src/pages/LoginPage.tsx",
+          "layout": "BlankLayout",
+          "permissions": "unauthenticated",
+          "meta": {
+            "title": "Login - WealthPulse",
+            "description": "Sign in to your account"
+          }
+        },
+        "/auth/signup": {
+          "name": "signup",
+          "component": "SignupPage",
+          "path": "apps/shell/src/pages/SignupPage.tsx",
+          "layout": "BlankLayout",
+          "permissions": "unauthenticated",
+          "meta": {
+            "title": "Sign Up - WealthPulse",
+            "description": "Create a new account"
+          }
+        },
+        "/auth/forgot-password": {
+          "name": "forgotPassword",
+          "component": "ForgotPasswordPage",
+          "path": "apps/shell/src/pages/ForgotPasswordPage.tsx",
+          "layout": "BlankLayout",
+          "permissions": "unauthenticated",
+          "meta": {
+            "title": "Forgot Password",
+            "description": "Reset your password"
+          }
+        }
+      },
+      "protected": {
+        "/dashboard": {
+          "name": "dashboard",
+          "component": "Dashboard (lazy from dashboard module)",
+          "module": "dashboard",
+          "port": 3001,
+          "path": "apps/dashboard/src/Dashboard.tsx",
+          "layout": "RootLayout",
+          "permissions": "authenticated",
+          "meta": {
+            "title": "Dashboard - WealthPulse",
+            "description": "Your financial dashboard"
+          }
+        },
+        "/portfolio": {
+          "name": "portfolio",
+          "component": "Portfolio (lazy from portfolio module)",
+          "module": "portfolio",
+          "port": 3002,
+          "path": "apps/portfolio/src/Portfolio.tsx",
+          "layout": "RootLayout",
+          "permissions": "authenticated",
+          "meta": {
+            "title": "Portfolio - WealthPulse",
+            "description": "Manage your investment portfolio"
+          }
+        },
+        "/portfolio/:id": {
+          "name": "portfolioDetail",
+          "component": "PortfolioDetail",
+          "path": "apps/portfolio/src/pages/PortfolioDetail.tsx",
+          "layout": "RootLayout",
+          "permissions": "authenticated",
+          "params": {
+            "id": "string (portfolio UUID)"
+          },
+          "meta": {
+            "title": "Portfolio Details",
+            "description": "View portfolio details"
+          }
+        },
+        "/watchlist": {
+          "name": "watchlist",
+          "component": "Watchlist (lazy from watchlist module)",
+          "module": "watchlist",
+          "port": 3003,
+          "path": "apps/watchlist/src/Watchlist.tsx",
+          "layout": "RootLayout",
+          "permissions": "authenticated",
+          "meta": {
+            "title": "Watchlist - WealthPulse",
+            "description": "Monitor your watched stocks"
+          }
+        },
+        "/watchlist/:symbol": {
+          "name": "stockDetail",
+          "component": "StockDetail",
+          "path": "apps/watchlist/src/pages/StockDetail.tsx",
+          "layout": "RootLayout",
+          "permissions": "authenticated",
+          "params": {
+            "symbol": "string (stock symbol)"
+          },
+          "meta": {
+            "title": "Stock Details",
+            "description": "View detailed stock information"
+          }
+        },
+        "/alerts": {
+          "name": "alerts",
+          "component": "Alerts (lazy from alerts module)",
+          "module": "alerts",
+          "port": 3004,
+          "path": "apps/alerts/src/Alerts.tsx",
+          "layout": "RootLayout",
+          "permissions": "authenticated",
+          "meta": {
+            "title": "Alerts - WealthPulse",
+            "description": "Manage your price and portfolio alerts"
+          }
+        },
+        "/settings": {
+          "name": "settings",
+          "component": "Settings",
+          "path": "apps/shell/src/pages/Settings.tsx",
+          "layout": "RootLayout",
+          "permissions": "authenticated",
+          "meta": {
+            "title": "Settings - WealthPulse",
+            "description": "Manage your account settings"
+          }
+        },
+        "/settings/profile": {
+          "name": "profileSettings",
+          "component": "ProfileSettings",
+          "path": "apps/shell/src/pages/ProfileSettings.tsx",
+          "layout": "RootLayout",
+          "permissions": "authenticated",
+          "meta": {
+            "title": "Profile Settings",
+            "description": "Update your profile"
+          }
+        },
+        "/settings/security": {
+          "name": "securitySettings",
+          "component": "SecuritySettings",
+          "path": "apps/shell/src/pages/SecuritySettings.tsx",
+          "layout": "RootLayout",
+          "permissions": "authenticated",
+          "meta": {
+            "title": "Security Settings",
+            "description": "Manage security and authentication"
+          }
+        },
+        "/settings/notifications": {
+          "name": "notificationSettings",
+          "component": "NotificationSettings",
+          "path": "apps/shell/src/pages/NotificationSettings.tsx",
+          "layout": "RootLayout",
+          "permissions": "authenticated",
+          "meta": {
+            "title": "Notification Settings",
+            "description": "Manage notification preferences"
+          }
+        }
+      },
+      "error": {
+        "/404": {
+          "name": "notFound",
+          "component": "NotFoundPage",
+          "path": "apps/shell/src/pages/NotFoundPage.tsx",
+          "layout": "BlankLayout",
+          "meta": {
+            "title": "Page Not Found",
+            "description": "The page you're looking for doesn't exist"
+          }
+        },
+        "/500": {
+          "name": "serverError",
+          "component": "ErrorPage",
+          "path": "apps/shell/src/pages/ErrorPage.tsx",
+          "layout": "BlankLayout",
+          "meta": {
+            "title": "Server Error",
+            "description": "Something went wrong"
+          }
+        }
+      }
+    },
+    "rules": {
+      "routing_001": "All routes defined in apps/shell/src/router.ts",
+      "routing_002": "Feature module routes lazy-loaded via React.lazy()",
+      "routing_003": "Route parameters must be typed: /dashboard/:id (id: string)",
+      "routing_004": "Query parameters handled via useSearch hook",
+      "routing_005": "Route protection via useAuth middleware",
+      "routing_006": "Deep linking supported - all routes shareable",
+      "routing_007": "Back button works correctly (history managed by Router)",
+      "routing_008": "404 route is catch-all for undefined routes",
+      "routing_009": "Prefetch data before navigation when possible",
+      "routing_010": "Analytics tracking on every route change"
+    },
+    "navigation": {
+      "sidebarMenu": {
+        "location": "apps/shell/src/components/Sidebar.tsx",
+        "items": [
+          {
+            "label": "Dashboard",
+            "icon": "LayoutDashboard",
+            "route": "/dashboard",
+            "permissions": "authenticated"
+          },
+          {
+            "label": "Portfolio",
+            "icon": "Briefcase",
+            "route": "/portfolio",
+            "permissions": "authenticated",
+            "children": [
+              {
+                "label": "Overview",
+                "route": "/portfolio"
+              },
+              {
+                "label": "Holdings",
+                "route": "/portfolio?tab=holdings"
+              },
+              {
+                "label": "Performance",
+                "route": "/portfolio?tab=performance"
+              }
+            ]
+          },
+          {
+            "label": "Watchlist",
+            "icon": "Star",
+            "route": "/watchlist",
+            "permissions": "authenticated"
+          },
+          {
+            "label": "Alerts",
+            "icon": "Bell",
+            "route": "/alerts",
+            "permissions": "authenticated",
+            "badge": "unreadCount"
+          },
+          {
+            "label": "Settings",
+            "icon": "Settings",
+            "route": "/settings",
+            "permissions": "authenticated"
+          }
+        ]
+      },
+      "headerNavigation": {
+        "location": "apps/shell/src/components/Header.tsx",
+        "items": [
+          {
+            "type": "search",
+            "placeholder": "Search stocks, portfolios...",
+            "action": "global search"
+          },
+          {
+            "type": "notifications",
+            "icon": "Bell",
+            "action": "open notifications"
+          },
+          {
+            "type": "user-menu",
+            "icon": "User",
+            "items": [
+              { "label": "Profile", "route": "/settings/profile" },
+              { "label": "Settings", "route": "/settings" },
+              { "divider": true },
+              { "label": "Logout", "action": "logout" }
+            ]
+          }
+        ]
+      }
+    },
+    "middleware": {
+      "authMiddleware": {
+        "location": "packages/shared/src/middleware/authMiddleware.ts",
+        "protects": "All /dashboard, /portfolio, /watchlist, /alerts routes",
+        "logic": "Check JWT token validity, redirect to /auth/login if invalid"
+      },
+      "analyticsMiddleware": {
+        "location": "apps/shell/src/middleware/analytics.ts",
+        "tracks": "Page views, user interactions, performance metrics",
+        "events": ["routeChange", "componentMount", "userAction", "apiCall"]
+      },
+      "errorBoundaryMiddleware": {
+        "location": "apps/shell/src/middleware/errorBoundary.ts",
+        "catches": "React errors and suspense failures",
+        "fallback": "Error page with retry button"
+      }
+    }
+  },
+
+  "skills": {
+    "shared": {
+      "skill_001": "ApiManagement",
+      "description": "Centralized API client with interceptors, error handling, retry logic",
+      "location": "packages/shared/src/api",
+      "exports": ["useQuery hooks", "useMutation hooks", "apiClient instance"]
+    },
+    "shared": {
+      "skill_002": "StateManagement",
+      "description": "Zustand stores with persistence, EventBus integration",
+      "location": "packages/shared/src/stores",
+      "exports": ["authStore", "portfolioStore", "watchlistStore", "uiStore"]
+    },
+    "shared": {
+      "skill_003": "TypeDefinitions",
+      "description": "Canonical TypeScript interfaces and types for entire app",
+      "location": "packages/shared/src/types",
+      "exports": ["Stock, Portfolio, Holding, Alert, User, API types"]
+    },
+    "shared": {
+      "skill_004": "CustomHooks",
+      "description": "Reusable React hooks for common patterns",
+      "location": "packages/shared/src/hooks",
+      "exports": ["useAuth, usePortfolio, useStocks, useWebSocket, useLocalStorage"]
+    },
+    "shared": {
+      "skill_005": "SharedComponents",
+      "description": "Reusable UI components used across all modules",
+      "location": "packages/shared/src/components",
+      "exports": ["Button, Input, Card, Badge, Alert, Loading, ErrorBoundary"]
+    },
+    "shell": {
+      "skill_101": "LayoutManagement",
+      "description": "Main app layout with header, sidebar, outlet for modules",
+      "location": "apps/shell/src/layouts",
+      "components": ["RootLayout, BlankLayout, ModuleLayout"]
+    },
+    "shell": {
+      "skill_102": "Authentication",
+      "description": "Login, signup, password reset flows",
+      "location": "apps/shell/src/pages/auth",
+      "components": ["LoginPage, SignupPage, ForgotPasswordPage"]
+    },
+    "shell": {
+      "skill_103": "ModuleFederation",
+      "description": "Dynamic module loading, error recovery, module management",
+      "location": "apps/shell/src/loaders",
+      "utilities": ["loadModule, preloadModule, handleModuleError"]
+    },
+    "dashboard": {
+      "skill_201": "DashboardWidget",
+      "description": "Dashboard components: portfolio summary, top performers, market overview",
+      "location": "apps/dashboard/src/components",
+      "components": ["PortfolioSummary, TopPerformers, MarketOverview"]
+    },
+    "portfolio": {
+      "skill_301": "PortfolioManagement",
+      "description": "CRUD operations for holdings, performance analytics",
+      "location": "apps/portfolio/src/features",
+      "components": ["HoldingsTable, AllocationChart, PerformanceMetrics"]
+    },
+    "watchlist": {
+      "skill_401": "WatchlistManagement",
+      "description": "Add/remove stocks, real-time price updates, price alerts",
+      "location": "apps/watchlist/src/features",
+      "components": ["WatchlistTable, PriceCard, AddStockForm"]
+    },
+    "alerts": {
+      "skill_501": "AlertManagement",
+      "description": "Create/manage alerts, notification center, alert history",
+      "location": "apps/alerts/src/features",
+      "components": ["AlertForm, NotificationCenter, AlertHistory"]
+    }
+  },
+
+  "agents": {
+    "roles": {
+      "frontend_developer": {
+        "responsibilities": [
+          "Implement React components",
+          "Create custom hooks",
+          "Handle UI state management",
+          "Implement features within assigned module"
+        ],
+        "skills": ["React", "TypeScript", "Tailwind CSS", "React Query"],
+        "owns": ["Feature modules (dashboard, portfolio, watchlist, alerts)"]
+      },
+      "architect": {
+        "responsibilities": [
+          "Design system architecture",
+          "Make MFE decisions",
+          "Define shared APIs",
+          "Code review and standards"
+        ],
+        "skills": ["System Design", "TypeScript", "Module Federation", "DevOps"],
+        "owns": ["Shared module", "Architecture decisions"]
+      },
+      "devops_engineer": {
+        "responsibilities": [
+          "Setup Docker/Docker Compose",
+          "Configure CI/CD pipeline",
+          "Manage deployments",
+          "Monitor performance and errors"
+        ],
+        "skills": ["Docker", "GitHub Actions", "Kubernetes", "Linux"],
+        "owns": ["Deployment, infrastructure, monitoring"]
+      },
+      "qa_engineer": {
+        "responsibilities": [
+          "Write unit tests",
+          "Write integration tests",
+          "Write E2E tests",
+          "Performance testing"
+        ],
+        "skills": ["Jest", "React Testing Library", "Playwright/Cypress"],
+        "owns": ["Test coverage, quality assurance"]
+      }
+    },
+    "ai_agents": {
+      "architect_agent": {
+        "role": "Software Architect",
+        "responsibility": "Design implementation plans, architectural decisions",
+        "tools": ["Code analysis", "Design patterns", "Best practices"],
+        "triggers": [
+          "New feature planning",
+          "Architecture questions",
+          "Design review needed"
+        ]
+      },
+      "code_review_agent": {
+        "role": "Code Reviewer",
+        "responsibility": "Review PRs, check code quality, enforce standards",
+        "tools": ["Type checking", "Linting", "Testing", "Performance analysis"],
+        "triggers": [
+          "Pull request created",
+          "Before merge to main",
+          "Type check failures"
+        ]
+      },
+      "test_agent": {
+        "role": "Test Engineer",
+        "responsibility": "Generate test cases, ensure coverage, performance testing",
+        "tools": ["Jest", "React Testing Library", "Playwright"],
+        "triggers": [
+          "New component created",
+          "Coverage below threshold",
+          "E2E test needed"
+        ]
+      },
+      "documentation_agent": {
+        "role": "Documentation Writer",
+        "responsibility": "Generate docs, API documentation, setup guides",
+        "tools": ["Markdown", "Code extraction", "TypeDoc"],
+        "triggers": [
+          "New module created",
+          "API changed",
+          "Setup guide needed"
+        ]
+      }
+    }
+  },
+
+  "eventBus": {
+    "system": "Custom EventBus Pattern",
+    "location": "packages/shared/src/eventBus.ts",
+    "events": {
+      "authentication": {
+        "user:login": {
+          "payload": "{ user: User, token: string }",
+          "listeners": ["All modules - update auth state"]
+        },
+        "user:logout": {
+          "payload": "{}",
+          "listeners": ["All modules - clear state and cache"]
+        },
+        "user:profile:updated": {
+          "payload": "{ user: User }",
+          "listeners": ["Header, Settings"]
+        }
+      },
+      "stock": {
+        "stock:selected": {
+          "payload": "{ symbol: string, data: Stock }",
+          "emitter": "Watchlist module",
+          "listeners": ["Stock detail page, Price chart"]
+        },
+        "stock:price:updated": {
+          "payload": "{ symbol: string, price: number, change: number }",
+          "emitter": "WebSocket listener",
+          "listeners": ["Dashboard, Watchlist, Portfolio"]
+        },
+        "stock:added:watchlist": {
+          "payload": "{ symbol: string }",
+          "emitter": "Watchlist module",
+          "listeners": ["Notifications, Analytics"]
+        }
+      },
+      "portfolio": {
+        "portfolio:changed": {
+          "payload": "{ portfolioId: string, holdings: Holding[] }",
+          "emitter": "Portfolio module",
+          "listeners": ["Dashboard, Analytics"]
+        },
+        "portfolio:created": {
+          "payload": "{ portfolio: Portfolio }",
+          "emitter": "Portfolio module",
+          "listeners": ["Watchlist, Alerts"]
+        },
+        "holding:added": {
+          "payload": "{ holding: Holding }",
+          "emitter": "Portfolio module",
+          "listeners": ["Dashboard, Performance"]
+        }
+      },
+      "alerts": {
+        "alert:triggered": {
+          "payload": "{ alert: Alert, value: number }",
+          "emitter": "Backend WebSocket",
+          "listeners": ["Alerts module, Notification center"]
+        },
+        "alert:created": {
+          "payload": "{ alert: Alert }",
+          "emitter": "Alerts module",
+          "listeners": ["Notifications"]
+        },
+        "alert:deleted": {
+          "payload": "{ alertId: string }",
+          "emitter": "Alerts module",
+          "listeners": ["Notifications"]
+        }
+      },
+      "ui": {
+        "sidebar:toggled": {
+          "payload": "{ open: boolean }",
+          "emitter": "Header component",
+          "listeners": ["All modules - adjust layout"]
+        },
+        "theme:changed": {
+          "payload": "{ theme: 'light' | 'dark' }",
+          "emitter": "Theme selector",
+          "listeners": ["All components - update colors"]
+        },
+        "notification:show": {
+          "payload": "{ type: 'success'|'error'|'info', message: string }",
+          "emitter": "Any module",
+          "listeners": ["Toast notification component"]
+        }
+      }
+    }
+  },
+
+  "dataFlow": {
+    "userAuthentication": {
+      "sequence": [
+        "1. User enters credentials on LoginPage",
+        "2. useMutation (login) sends to /api/auth/login",
+        "3. Backend validates and returns JWT token",
+        "4. Token stored in httpOnly cookie",
+        "5. Emit user:login event via EventBus",
+        "6. authStore updates with user data",
+        "7. Redirect to /dashboard"
+      ]
+    },
+    "realTimeStockUpdate": {
+      "sequence": [
+        "1. Dashboard, Portfolio, Watchlist modules mount",
+        "2. useWebSocket hook connects to WS server",
+        "3. Subscribe to stock price updates",
+        "4. Backend sends price:updated event",
+        "5. Emit stock:price:updated via EventBus",
+        "6. React Query invalidates cache automatically",
+        "7. Components re-render with new prices"
+      ]
+    },
+    "crossModuleCommunication": {
+      "sequence": [
+        "1. User clicks stock in Watchlist module",
+        "2. Watchlist emits stock:selected event",
+        "3. Stock detail component (in same or different module) listens",
+        "4. Fetch stock data via useStocks hook",
+        "5. Display stock details with real-time updates"
+      ]
+    }
+  },
+
+  "developmentWorkflow": {
+    "localSetup": {
+      "step_1": "Clone repository and run 'pnpm install'",
+      "step_2": "Copy .env.example to .env and fill in values",
+      "step_3": "Run 'docker-compose up' for backend services",
+      "step_4": "Run 'pnpm dev' to start all modules on their ports",
+      "step_5": "Open http://localhost:3000 in browser"
+    },
+    "featureDevelopment": {
+      "step_1": "Create feature branch: git checkout -b feature/description",
+      "step_2": "Make changes to assigned module",
+      "step_3": "Run tests: pnpm type-check && pnpm lint && pnpm test",
+      "step_4": "Commit with clear message and sign-off",
+      "step_5": "Push and create Pull Request",
+      "step_6": "Address review feedback",
+      "step_7": "Merge to develop after approval"
+    },
+    "codeReview": {
+      "checklist": [
+        "✅ All tests pass and coverage maintained",
+        "✅ TypeScript strict mode passes",
+        "✅ ESLint and Prettier pass",
+        "✅ No console.log or debugger statements",
+        "✅ New code has 80%+ test coverage",
+        "✅ Documentation updated",
+        "✅ Performance impact assessed",
+        "✅ Accessibility requirements met (WCAG AA)"
+      ]
+    }
+  },
+
+  "deploymentStrategy": {
+    "environments": {
+      "development": {
+        "url": "localhost:3000",
+        "purpose": "Local development",
+        "features": "Hot reload, source maps, detailed errors"
+      },
+      "staging": {
+        "url": "staging.wealth-pulse.io",
+        "purpose": "Testing before production",
+        "features": "Production-like, full monitoring, no sample data"
+      },
+      "production": {
+        "url": "app.wealth-pulse.io",
+        "purpose": "Live users",
+        "features": "Optimized, CDN, full monitoring, backup strategy"
+      }
+    },
+    "cicdPipeline": {
+      "onPullRequest": [
+        "1. Run type-check (TypeScript)",
+        "2. Run linting (ESLint, Prettier)",
+        "3. Run unit tests (Jest)",
+        "4. Generate coverage report",
+        "5. Build all packages",
+        "6. Analyze bundle size"
+      ],
+      "onMergeToMain": [
+        "1. Run full test suite",
+        "2. Build production bundle",
+        "3. Run E2E tests on staging",
+        "4. Generate performance report",
+        "5. Auto-deploy to production"
+      ]
+    }
+  },
+
+  "monitoring": {
+    "errorTracking": {
+      "tool": "Sentry",
+      "captures": ["JavaScript errors", "API errors", "Performance issues"],
+      "dsn": "process.env.SENTRY_DSN"
+    },
+    "analytics": {
+      "tool": "PostHog or Mixpanel",
+      "tracks": ["Page views", "User interactions", "Feature usage"],
+      "events": ["routeChange", "componentInteraction", "apiCall"]
+    },
+    "performance": {
+      "tool": "DataDog or New Relic",
+      "monitors": ["API response times", "Database queries", "Component render times"],
+      "alerts": ["High error rate", "Slow API", "High memory usage"]
+    },
+    "logging": {
+      "strategy": "Structured logging with levels: error, warn, info, debug",
+      "provider": "CloudWatch, ELK stack, or Loki",
+      "retention": "30 days for debug, 90 days for errors"
+    }
+  },
+
+  "metadata": {
+    "version": "1.0.0",
+    "createdAt": "2026-09-28",
+    "updatedAt": "2026-09-28",
+    "status": "active",
+    "owner": "Frontend Architecture Team",
+    "repository": "github.com/yourorg/wealth-pulse",
+    "documentation": "docs.wealth-pulse.io",
+    "contactEmail": "arch-team@wealth-pulse.io"
+  }
+}

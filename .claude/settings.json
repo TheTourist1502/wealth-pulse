@@ -1,0 +1,126 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm type-check*)",
+      "Bash(pnpm lint*)",
+      "Bash(pnpm test*)",
+      "Bash(pnpm exec prettier *)",
+      "Bash(pnpm exec tsc *)",
+      "Bash(pnpm exec eslint *)",
+      "Bash(pnpm exec playwright test*)",
+      "Bash(git diff *)",
+      "Bash(git status*)",
+      "Bash(git log *)",
+      "Skill(llm-council)",
+      "Skill(llm-council:*)",
+      "Skill(design-check)",
+      "Skill(new-feature)",
+      "Skill(caveman)",
+      "Skill(promt-master)",
+      "mcp__plugin_claude-mem_mcp-search__search",
+      "Edit(/.claude/skills/design-check/**)",
+      "Read(//home/afriduzzaman/.claude/skills/**)",
+      "Bash(pnpm -v)",
+      "Bash(npm view *)",
+      "Bash(node /tmp/claude-1000/-home-afriduzzaman-Projects-wealth-pulse/c006839a-ae10-4b7d-9b75-202b23e649df/scratchpad/gen.mjs)",
+      "Bash(pnpm install *)",
+      "Bash(pnpm type-check *)",
+      "Bash(pnpm build *)",
+      "Bash(sed -i \"s/loadEnv\\(mode, process.cwd\\(\\), ''\\)/loadEnv\\(mode, '.', ''\\)/\" /tmp/claude-1000/-home-afriduzzaman-Projects-wealth-pulse/c006839a-ae10-4b7d-9b75-202b23e649df/scratchpad/gen.mjs)",
+      "Bash(which chromium *)",
+      "Read(//home/afriduzzaman/.cache/ms-playwright/**)",
+      "Bash(timeout 30 google-chrome --headless=new --disable-gpu --virtual-time-budget=8000 --enable-logging=stderr --v=0 --dump-dom http://localhost:3000/portfolio)",
+      "Bash(cd ~/work/mf_xumane/mf_layout && ls -la && find . -path ./node_modules -prune -o -path ./.git -prune -o -path ./dist -prune -o -type f -print | grep -v '@mf-types' | head -100)",
+      "Read(//home/afriduzzaman/work/mf_xumane/mf_layout/**)",
+      "Bash(cd ~/work/mf_xumane/mf_layout && cat module-federation.config.js docs/remote-modules.md scripts/microfrontends.js src/App.tsx src/bootstrap.tsx src/main.tsx; ls src src/*)",
+      "Bash(cd ~/work/mf_xumane && ls; cd mf_layout/src/routing && cat index.tsx routeConfig.tsx lazyComponents.ts | head -300; cat ../constants/routes.ts | head -80; ls ../components/layout)",
+      "Read(//home/afriduzzaman/Projects/constants/**)",
+      "Read(//home/afriduzzaman/Projects/components/**)",
+      "Bash(cd ~/work/mf_xumane/mf_equity && ls; grep -rn \"exposes\" -A12 *.config.* rspack* 2>/dev/null | head -30; cat src/routing/index.tsx src/routing/routeConfig.tsx src/routing/lazyComponents.ts | head -150; cat src/App.tsx; ls src/constants; head -40 src/constants/routes.ts 2>/dev/null; cat ../mf_layout/src/routing/lazyComponents.ts)",
+      "Read(//home/afriduzzaman/work/mf_xumane/mf_equity/**)",
+      "Read(//home/afriduzzaman/Projects/mf_layout/src/routing/**)",
+      "Bash(python3 -c ' *)",
+      "Bash(timeout 30 google-chrome --headless=new --disable-gpu --enable-logging=stderr --v=0 --virtual-time-budget=8000 --dump-dom \"http://localhost:3000/watchlist/AAPL\")",
+      "Bash(cd ~/work/mf_xumane/mf_layout && grep -n \"types\\\\|GENERATE\" package.json; cat scripts/generate-remote-types.js | head -80; grep -n \"dts\\\\|GENERATE_TYPES\\\\|mf-types\" rspack.config.js tsconfig.json; ls @mf-types @mf-types/* | head -30; cd ../mf_equity && grep -n \"dts\\\\|GENERATE_TYPES\" -A8 rspack.config.js module-federation.config.js | head -30; ls @mf-types | head; cd ~/Projects/wealth-pulse && ls -d wp_*/@mf-types wp_*/.__mf__temp 2>/dev/null; ls wp_portfolio/dist 2>/dev/null | head)",
+      "Read(//home/afriduzzaman/Projects/**)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3003/@mf-types.zip)"
+    ],
+    "additionalDirectories": [
+      "/home/afriduzzaman/.claude/plans"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "headroom init hook ensure",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "headroom init hook ensure",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import json,os,re,sys; fp=json.loads(os.environ.get('CLAUDE_TOOL_INPUT','{}') or '{}').get('file_path',''); b=os.path.basename(fp); (re.fullmatch(r'\\.env(\\..+)?', b) and b!='.env.example') and (print(f'Blocked: {fp} holds secrets — use .env.example for keys'), sys.exit(2))\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import json,os,re,sys; cmd=json.loads(os.environ.get('CLAUDE_TOOL_INPUT','{}') or '{}').get('command',''); re.search(r'\\.env(?!\\.example)(\\.[\\w-]+)?(\\s|$|[\\'\\\\\\\";|])', cmd) and (print('Blocked: command touches a .env secrets file'), sys.exit(2))\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import json,os,subprocess; fp=json.loads(os.environ.get('CLAUDE_TOOL_INPUT','{}') or '{}').get('file_path',''); fp.endswith(('.ts','.tsx','.css','.json')) and os.path.exists('package.json') and subprocess.run(['pnpm','exec','prettier','--write',fp])\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f package.json ] && pnpm -s type-check 2>&1 | tail -20 || true"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "figma@claude-plugins-official": true,
+    "claude-code-setup@claude-plugins-official": true
+  }
+}
