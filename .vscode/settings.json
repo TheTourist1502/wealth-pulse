@@ -1,0 +1,14 @@
+{
+  "eslint.workingDirectories": [
+    "wp_shared",
+    "wp_layout",
+    "wp_dashboard",
+    "wp_portfolio",
+    "wp_watchlist",
+    "wp_alerts"
+  ],
+  "eslint.validate": ["typescript", "typescriptreact"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
+}

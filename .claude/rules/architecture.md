@@ -38,8 +38,8 @@ when a second app needs it, not before.
   `@wealth-pulse/<package>`.
 - Inside each app: `src/{components,hooks,pages,types,utils}` (+ `features/`
   where the config lists one).
-- Components `PascalCase.tsx`; hooks `useCamelCase.ts`; stores
-  `<feature>Store.ts`; barrels `index.ts`.
+- File and identifier naming: see `rules/naming.md` (kebab-case files and
+  folders, e.g. `user-profile.tsx`, `use-auth.ts`, `auth-store.ts`).
 
 ## State
 

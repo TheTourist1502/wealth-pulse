@@ -76,7 +76,17 @@
       "Bash(ps --ppid 27452 -o pid,cmd)",
       "Bash(curl -s localhost:3000/src/styles.css)",
       "Bash(npx tsc *)",
-      "Bash(npx eslint *)"
+      "Bash(npx eslint *)",
+      "Bash(node -e \"import\\('eslint-plugin-react-hooks'\\).then\\(m=>console.log\\(Object.keys\\(m.default.configs\\), Object.keys\\(m.default.configs.flat||{}\\)\\)\\);import\\('eslint-plugin-react-refresh'\\).then\\(m=>console.log\\(Object.keys\\(m.default.configs||{}\\)\\)\\);import\\('eslint-plugin-jsx-a11y'\\).then\\(m=>console.log\\(Object.keys\\(m.default.flatConfigs||{}\\)\\)\\)\")",
+      "Bash(pnpm -s lint)",
+      "Bash(pnpm -s type-check)",
+      "Bash(npx tsx *)",
+      "Bash(git -C wp_layout status --short)",
+      "Bash(pnpm -s exec tsc --noEmit -p .)",
+      "Bash(sed -i \"s#'./card': './src/card.tsx'#'./Card': './src/card.tsx'#\" vite.config.ts)",
+      "Bash(sed -i \"s#'../useDebouncedValue'#'../use-debounced-value'#\" src/components/data-table/hooks/use-data-table/index.ts)",
+      "Bash(tee /dev/stderr)",
+      "Bash(xargs -r sed -i 's/remoteRoutes\\\\.tsx/remote-routes.tsx/g; s/menuItems\\\\.ts/menu-items.ts/g')"
     ],
     "additionalDirectories": [
       "/home/afriduzzaman/.claude/plans"

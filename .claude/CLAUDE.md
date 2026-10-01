@@ -59,7 +59,8 @@ Invoke `/caveman` and `/promt-master` at the start of every chat — see
 ## Rules index
 
 - `rules/chat-mode.md` — `/caveman` + `/promt-master` always on
-- `rules/architecture.md` — MFE boundaries, naming, dependencies, state, EventBus
+- `rules/architecture.md` — MFE boundaries, dependencies, state, EventBus
+- `rules/naming.md` — kebab-case files/folders, identifier casing, tests, barrels
 - `rules/styling.md` — DESIGN.md enforcement, Tailwind usage, dark mode, motion
 - `rules/routing.md` — TanStack Router, route protection, navigation
 - `rules/code-quality.md` — TypeScript, lint, testing, performance budgets
